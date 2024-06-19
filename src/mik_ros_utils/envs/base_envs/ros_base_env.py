@@ -4,7 +4,7 @@ import tf2_ros as tf2
 
 from mik_tools.env_tools.base_env import BaseEnv
 from mik_tools.recording_utils.data_recording_wrappers import DictSelfSavedWrapper
-from mik_ros_utils.ros_utils.tf_utils import get_tfs, get_tf
+from mik_ros_utils.ros_utils.tf_utils.tf_utils import get_tfs, get_tf
 from mik_ros_utils.ros_utils.tf2_wrapper import TF2Wrapper
 from mik_ros_utils.utils.recording_utils.data_recording_wrappers import TFSelfSavedWrapper
 

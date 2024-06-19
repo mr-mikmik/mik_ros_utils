@@ -124,6 +124,14 @@ def unpack_dict_to_message(msg_dict, Msg):
     pass
 
 
+def unpack_camera_info(camera_info_msg):
+    unpacked_camera_info = pack_message_as_dict(camera_info_msg)
+    unpacked_camera_info['K'] = np.asarray(camera_info_msg.K).reshape(3, 3)
+    unpacked_camera_info['R'] = np.asarray(camera_info_msg.R).reshape(3, 3)
+    unpacked_camera_info['P'] = np.asarray(camera_info_msg.P).reshape(3, 4)
+    return unpacked_camera_info
+
+
 def _process_compressed_img_msg(img_msg):
     encoding_type = np.uint8
     np_img = np.frombuffer(img_msg.data, dtype=encoding_type)

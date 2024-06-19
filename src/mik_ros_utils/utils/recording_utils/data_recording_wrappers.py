@@ -1,6 +1,6 @@
 from mik_tools.recording_utils.data_recording_wrappers import DataSelfSavedWrapper
 from mik_ros_utils.utils.recording_utils.recording_utils import record_wrenches
-from mik_ros_utils.ros_utils.tf_utils import record_tfs
+from mik_ros_utils.ros_utils.tf_utils.tf_utils import record_tfs
 
 
 class WrenchSelfSavedWrapper(DataSelfSavedWrapper):
