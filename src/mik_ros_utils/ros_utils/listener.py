@@ -25,8 +25,8 @@ class Listener:
         self.lock = Lock()
 
         self.topic_name = topic_name
-        self.subscriber = rospy.Subscriber(topic_name, topic_type, self.callback, queue_size=queue_size)
         self.custom_callback = callback
+        self.subscriber = rospy.Subscriber(topic_name, topic_type, self.callback, queue_size=queue_size)
         self.get(wait_for_data)
 
     def callback(self, msg):
