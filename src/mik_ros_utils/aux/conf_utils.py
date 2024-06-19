@@ -2,24 +2,12 @@ import yaml
 import os
 import numpy as np
 import pandas as pd
-import rospkg
-from mik_ros_utils.aux.package_utils import package_path, package_name
 
-config_path = os.path.join(package_path, 'config')
+from mik_ros_utils import find_package_path
+from mik_ros_utils.aux.package_utils import package_path, package_name, config_path
+
 camera_calibration_joint_sequence_conf_path = os.path.join(package_path, 'config', 'camera_calibration_joint_sequences')
 camera_saved_calibrations_path = os.path.join(package_path, 'config', 'camera_saved_calibrations')
-
-
-def find_package_path(package_name):
-    rospack = rospkg.RosPack()
-    package_path = rospack.get_path(package_name)
-    return package_path
-
-
-def get_package_config_path(package_name):
-    package_path = find_package_path(package_name)
-    config_path = os.path.join(package_path, 'config')
-    return config_path
 
 
 def get_package_camera_calibration_joint_sequence_conf_path(package_name):

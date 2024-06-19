@@ -1,6 +1,6 @@
 import os
 
-from mik_ros_utils.aux.conf_utils import camera_saved_calibrations_path, get_package_config_path, get_package_camera_saved_calibrations_path
+from mik_ros_utils.aux.conf_utils import camera_saved_calibrations_path, get_package_camera_saved_calibrations_path
 from mik_ros_utils.ros_utils.tf_utils.tf_utils import save_tfs, load_tfs
 from mik_ros_utils.camera_utils.camera_utils import list_camera_tf_frames
 
