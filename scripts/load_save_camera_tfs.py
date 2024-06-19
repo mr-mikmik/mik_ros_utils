@@ -16,8 +16,8 @@ if __name__ == '__main__':
     parser.add_argument('--filename', type=str, default=None, help='name of the tf configuration')
     parser.add_argument('--parent_frame', type=str, default='med_base', help='name of the parent framet to save the configuration')
     parser.add_argument('--rate', type=float, default=None, help='TF publishing rate (if None, then are loaded as static)')
-    parser.add_argument('--save', action='store_true', help='impedance mode')
-    parser.add_argument('--load', action='store_true', help='impedance mode')
+    parser.add_argument('--save', action='store_true', help='if to save the tfs to a file')
+    parser.add_argument('--load', action='store_true', help='if to load the tfs from a file')
     parser.add_argument('--package', type=str, default=None, help='name of the package where the config file is stored')
     parser.add_argument('--camera_ids', type=int, nargs='+', default=None,
                         help='scene name for the data. For organization purposes')

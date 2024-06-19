@@ -22,14 +22,15 @@ class CameraApriltagCalibration(object):
 
     def __init__(self, tag_id=None, calibration_frame_name='calibration_frame', parent_frame_name=None, only_camera_ids=None, rate=10):
         """
-
-        :param tag_id: id
+        Calibration class for a set of cameras given a tag
+        :param tag_id (str): id of the tag to be used for calibration
             if None, it will pick the first detection tag we find
         :param calibration_frame_name: <str> name of the frame
         :param parent_frame_name: <str> name of the frame which we will broadcast the cameras tfs wrt
             if None, it will be set to the calibration_frame_name
         :param only_camera_ids: <list> if provided, we only broadcast the tfs for the cameras with the ids in the list.
             if None, we will broadcast tfs for all cameras available
+        :param rate:
         """
         self.tag_id = tag_id
         self.calibration_frame_name = calibration_frame_name
