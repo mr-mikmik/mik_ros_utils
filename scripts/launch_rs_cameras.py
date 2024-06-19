@@ -3,8 +3,7 @@ import rospy
 import roslaunch
 import time
 import argparse
-
-from mmint_camera_utils.aux.conf_utils import translate_camera_ids
+from mik_ros_utils.aux.load_confs import load_camera_names_and_ids
 
 """
 Realsense D4 cameras (D4115, D435,...) only allow some (width, height, rate) configurations:
@@ -36,55 +35,43 @@ resolution_options = {
 }
 
 parser = argparse.ArgumentParser('Camera Launcher')
-parser.add_argument('--mmint_camera_ids', type=int, nargs='+', default=None, help='list of mmint camera ids (0,1,2,..)')
-parser.add_argument('--camera_names', type=str, nargs='+', default=None, help='list of names to set to the cameras. If not provided they will be camera_1, camera_2....')
-parser.add_argument('--resolution', type=str, default='640x480', choices=resolution_options.keys(), help=f'Resolution of the cameras. Options: {resolution_options.keys()}')
+parser.add_argument('--camera_config_package_name', type=str, default='mik_ros_utils', help=f'Name of the package to where to load the configuration for the cameras (cameras.yaml). Default: mik_ros_utils')
 parser.add_argument('--tags_config_package_name', type=str, default='apriltag_ros', help=f'Name of the package to where to load the configuration for the tags. Default: apriltag_ros')
+parser.add_argument('--resolution', type=str, default='640x480', choices=resolution_options.keys(), help=f'Resolution of the cameras. Options: {resolution_options.keys()}')
+parser.add_argument('--rate', type=float, default=15., help=f'Rate of the cameras. Default: 15')
 parser.add_argument('--not_apriltags', action='store_true', help='Do not launch the apriltags detection')
+parser.add_argument('--enable_pointcloud', action='store_true', help='Enable the pointcloud publishing')
+parser.add_argument('--align_depth', action='store_true', help='Align the depth image with the color image. Default: False')
 args, _ = parser.parse_known_args()
 
-
-
-rospy.init_node("launch_camera_node")
-
-# Load running parameters from the parameter server.
-
-camera_mmint_ids = rospy.get_param("~mmint_camera_ids", None)
-if camera_mmint_ids is None:
-    camera_mmint_ids = args.mmint_camera_ids
-
-if camera_mmint_ids is not None:
-    cameras_ids = translate_camera_ids(camera_mmint_ids)
-else:
-    cameras_ids = rospy.get_param("~cameras_ids", ['819112071464', '819112072436'])
-rate = rospy.get_param("~rate", 15)
-
-enable_pointcloud = rospy.get_param("~enable_pointcloud", True)
-align_depth = rospy.get_param("~align_depth", False)
-
-uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-uuids = []
-
-roslaunch.configure_logging(uuid)
-
-launch_files = []
-launches = []
-
-
+# Unpack the arguments
+rate = args.rate
+enable_pointcloud = args.enable_pointcloud
+align_depth = args.align_depth
+camera_names = args.camera_names
+camera_config_package_name = args.camera_config_package_name
+tags_config_package_name = args.tags_config_package_name
 image_size = resolution_options[args.resolution]
 img_width = image_size[0]
 img_height = image_size[1]
 
-camera_names = args.camera_names
+
+camera_names_and_ids = load_camera_names_and_ids(camera_config_package_name) # dictionary of  {camera_name: camera_id}
+
+# Initialize the node
+rospy.init_node("launch_camera_node")
+
+
+uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+uuids = []
+roslaunch.configure_logging(uuid)
+launch_files = []
+launches = []
 
 # Launch the cameras ------------------------------------------------------------------------------------------------
 print('\n\nLaunching cameras with ids: {}\n\n'.format(cameras_ids))
 time.sleep(.5)
-for i, camera_id in enumerate(cameras_ids):
-    if camera_names is not None:
-        camera_name = camera_names[i]
-    else:
-        camera_name = 'camera_{}'.format(i+1)
+for i, (camera_name, camera_id) in enumerate(camera_names_and_ids.items()):
     # Process arguments
     cli_args_i = ['realsense2_camera',  # package
                   'rs_camera.launch',   # launch file
@@ -105,28 +92,20 @@ for i, camera_id in enumerate(cameras_ids):
     roslaunch_file_i = roslaunch.rlutil.resolve_launch_arguments(cli_args_i)[0]
     roslaunch_args_i = cli_args_i[2:]
     # Launch the file:
-    # launch_files.append((roslaunch_file_i, roslaunch_args_i))
     uuid_i = roslaunch.rlutil.get_or_generate_uuid(None, False)
     uuids.append(uuid_i)
     launch_i = roslaunch.parent.ROSLaunchParent(uuid_i, [(roslaunch_file_i, roslaunch_args_i)])
     launches.append(launch_i)
     launch_i.start()
     rospy.sleep(2)
-    # launch_files.append(roslaunch_file_i)
 
 
 if not args.not_apriltags:
     rospy.sleep(5)
     # Lanuch the continuous detection for each camera:  ------------------------------------------------------------------------------------------------
-
-    for i, camera_id in enumerate(cameras_ids):
-        if camera_names is not None:
-            camera_name = camera_names[i]
-        else:
-            camera_name = 'camera_{}'.format(i + 1)
-
-        cli_args_i = ['apriltag_ros', # package
-                       'continuous_detection.launch', # launch file
+    for i, (camera_name, camera_id) in enumerate(camera_names_and_ids.items()):
+        cli_args_i = ['mik_ros_utils', # package
+                       'apriltag_continuous_detection.launch', # launch file
                        f'camera_name:=/{camera_name}',
                        f'camera_frame:=/{camera_name}_color_optical_frame',
                        'image_topic:=/color/image_raw',
@@ -137,15 +116,12 @@ if not args.not_apriltags:
         roslaunch_file_i = roslaunch.rlutil.resolve_launch_arguments(cli_args_i)[0]
         roslaunch_args_i = cli_args_i[2:]
         # Launch the file:
-        # launch_files.append((roslaunch_file_i, roslaunch_args_i))
         uuid_i = roslaunch.rlutil.get_or_generate_uuid(None, False)
         uuids.append(uuid_i)
         launch_i = roslaunch.parent.ROSLaunchParent(uuid_i, [(roslaunch_file_i, roslaunch_args_i)])
         launches.append(launch_i)
         launch_i.start()
         rospy.sleep(2)
-
-# Lauch the tf broadcasters:
 
 rospy.sleep(3)
 

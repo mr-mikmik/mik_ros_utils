@@ -4,8 +4,7 @@ import yaml
 import sys
 import os
 import pathlib
-from mik_tools import tr
-from mik_ros_utils import package_path
+from mik_ros_utils import package_path, find_package_path
 
 
 def load_robot_configurations():
@@ -20,6 +19,19 @@ def load_tool_grasp_params():
     return bubble_reconstruction_configs
 
 
+def load_camera_config(package_name='mik_ros_utils'):
+    package_path = find_package_path(package_name)
+    camera_configs_path = os.path.join(package_path, 'config', 'cameras.yaml')
+    camera_configs = _load_config_from_path(camera_configs_path)
+    # camera_config is {'camera_name':'camera_id'} dictionary
+    return camera_configs
+
+
+def load_camera_names_and_ids(package_name='mik_ros_utils'):
+    camera_configs = load_camera_config(package_name)
+    camera_names_and_ids = camera_configs
+    return camera_names_and_ids
+
 def _load_config_from_path(path):
     config = None
     with open(path) as f:
@@ -27,3 +39,7 @@ def _load_config_from_path(path):
     return config
 
 
+
+if __name__ == '__main__':
+    camera_config = load_camera_config()
+    print(camera_config)
