@@ -1,10 +1,20 @@
 #! /usr/bin/env python
+# ----
+# Adapted from: https://github.com/UM-ARM-Lab/arc_utilities
+# ----
 
 import time
 from typing import Optional, Type
 
 import rosgraph
 import rospy
+
+
+def safe_init_node(node_name: str):
+    try:
+        rospy.init_node(node_name)
+    except (rospy.exceptions.ROSInitException, rospy.exceptions.ROSException):
+        pass
 
 
 def wait_for(func, warn_after: Optional[int] = 10, name: Optional[str] = ""):

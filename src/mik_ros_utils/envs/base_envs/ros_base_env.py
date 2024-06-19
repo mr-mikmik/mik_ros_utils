@@ -1,7 +1,6 @@
 import rospy
 import tf2_ros as tf2
 
-
 from mik_tools.env_tools.base_env import BaseEnv
 from mik_tools.recording_utils.data_recording_wrappers import DictSelfSavedWrapper
 from mik_ros_utils.ros_utils.tf_utils.tf_utils import get_tfs, get_tf
@@ -12,8 +11,6 @@ from mik_ros_utils.utils.recording_utils.data_recording_wrappers import TFSelfSa
 class ROSBaseEnv(BaseEnv):
     """
     Environment with:
-     - Med robot
-     - Wrench recorder
      - Tf listener
     """
     def __init__(self, save_path=None, scene_name='default_scene', ref_frame='med_base', wrap_data=False, verbose=False, buffered=False):

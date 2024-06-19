@@ -1,2 +1,3 @@
 from mik_ros_utils.aux.package_utils import package_path
 from mik_ros_utils.aux.conf_utils import find_package_path, get_package_config_path
+from mik_ros_utils.ros_utils.ros_helpers import safe_init_node
