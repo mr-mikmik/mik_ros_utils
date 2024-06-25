@@ -76,7 +76,8 @@ class CameraApriltagCalibration(object):
         # - Create a Subscriber for each topic
         subscribers = []
         for i, topic in enumerate(detected_topics):
-            camera_id = topic.split('tag_detections_')[-1]
+            # camera_id = topic.split('tag_detections_')[-1]
+            camera_id = topic.split('/')[1] # topic in format /camera_id/tag_detections
             subscriber_i = rospy.Subscriber(topic, AprilTagDetectionArray, self._update_detections, camera_id)
             subscribers.append(subscriber_i)
         return subscribers
@@ -117,7 +118,7 @@ class CameraApriltagCalibration(object):
                         # get the transformation from tag_id to camera_i_link
                         t = self._get_transform_from_detection(detection, tag_id=self.tag_id)
                         self.tf_buffer.set_transform(t, 'default_authority')
-                        ctr = self.tf_buffer.lookup_transform_core('tag_{}'.format(self.tag_id), 'camera_{}_link'.format(camera_id), rospy.Time(0))
+                        ctr = self.tf_buffer.lookup_transform_core('detected_tag_{}'.format(self.tag_id), '{}_link'.format(camera_id), rospy.Time(0))
                         # pos, rot = b[0], b[1]
                         # pack the transform
                         # Calibration Frame Transform:
@@ -126,10 +127,10 @@ class CameraApriltagCalibration(object):
                         self.tf_buffer.set_transform(calib_frame_tr, 'default_authority')
                         rospy.sleep(.1)
                         # Get transformation between the
-                        ltr = self.tf_buffer.lookup_transform_core(self.broadcast_parent_frame_name, 'camera_{}_link'.format(camera_id), rospy.Time(0))
+                        ltr = self.tf_buffer.lookup_transform_core(self.broadcast_parent_frame_name, '{}_link'.format(camera_id), rospy.Time(0))
                         tf_i = {}
                         tf_i['frame_id'] = self.broadcast_parent_frame_name
-                        tf_i['child_id'] = 'camera_{}_link'.format(camera_id)
+                        tf_i['child_id'] = '{}_link'.format(camera_id)
                         tf_i['x'] = ltr.transform.translation.x
                         tf_i['y'] = ltr.transform.translation.y
                         tf_i['z'] = ltr.transform.translation.z
@@ -144,7 +145,7 @@ class CameraApriltagCalibration(object):
                             self.tfs_measures[camera_id] = [tf_i]
 
                         # Add camera_frame-to-calibration_frame and broadcast_frame-to-calibration_frame for aggregation
-                        cam_2_cf_tr_raw_i = self.tf_buffer.lookup_transform_core('camera_{}_link'.format(camera_id), self.calibration_frame_name, rospy.Time(0))
+                        cam_2_cf_tr_raw_i = self.tf_buffer.lookup_transform_core('{}_link'.format(camera_id), self.calibration_frame_name, rospy.Time(0))
                         bf_2_cf_tr_raw_i = self.tf_buffer.lookup_transform_core(self.broadcast_parent_frame_name, self.calibration_frame_name, rospy.Time(0))
                         cam_2_cf_tr_i = self._unpack_tf_transformation(cam_2_cf_tr_raw_i)
                         bf_2_cf_tr_i = self._unpack_tf_transformation(bf_2_cf_tr_raw_i)
@@ -172,9 +173,9 @@ class CameraApriltagCalibration(object):
         t.header.stamp = rospy.Time.now()
         t.header.frame_id = detection.pose.header.frame_id
         if tag_id is None:
-            t.child_frame_id = 'tag_{}'.format(detection.id[0])
+            t.child_frame_id = 'detected_tag_{}'.format(detection.id[0])
         else:
-            t.child_frame_id = 'tag_{}'.format(tag_id)
+            t.child_frame_id = 'detected_tag_{}'.format(tag_id)
         t.transform.translation.x = detection.pose.pose.pose.position.x
         t.transform.translation.y = detection.pose.pose.pose.position.y
         t.transform.translation.z = detection.pose.pose.pose.position.z
@@ -224,7 +225,7 @@ class CameraApriltagCalibration(object):
                 q_i = tr.quaternion_from_matrix(R_ext)
                 tf_measure_i = {
                     'frame_id': self.broadcast_parent_frame_name,
-                    'child_id': 'camera_{}_link'.format(camera_id),
+                    'child_id': '{}_link'.format(camera_id),
                     'x': t[0],
                     'y': t[1],
                     'z': t[2],

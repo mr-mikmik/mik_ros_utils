@@ -32,13 +32,15 @@ resolution_options = {
     '848x480': (848, 480),
     '1280x720': (1280, 720),
     '640x360': (640, 369),
+    '480x270': (480, 270),
+    '424x240': (424, 240)
 }
 
 parser = argparse.ArgumentParser('Camera Launcher')
 parser.add_argument('--camera_config_package_name', type=str, default='mik_ros_utils', help=f'Name of the package to where to load the configuration for the cameras (cameras.yaml). Default: mik_ros_utils')
 parser.add_argument('--tags_config_package_name', type=str, default='apriltag_ros', help=f'Name of the package to where to load the configuration for the tags. Default: apriltag_ros')
 parser.add_argument('--resolution', type=str, default='640x480', choices=resolution_options.keys(), help=f'Resolution of the cameras. Options: {resolution_options.keys()}')
-parser.add_argument('--rate', type=float, default=15., help=f'Rate of the cameras. Default: 15')
+parser.add_argument('--rate', type=int, default=15, help=f'Rate of the cameras. Default: 15')
 parser.add_argument('--not_apriltags', action='store_true', help='Do not launch the apriltags detection')
 parser.add_argument('--enable_pointcloud', action='store_true', help='Enable the pointcloud publishing')
 parser.add_argument('--align_depth', action='store_true', help='Align the depth image with the color image. Default: False')
@@ -48,7 +50,6 @@ args, _ = parser.parse_known_args()
 rate = args.rate
 enable_pointcloud = args.enable_pointcloud
 align_depth = args.align_depth
-camera_names = args.camera_names
 camera_config_package_name = args.camera_config_package_name
 tags_config_package_name = args.tags_config_package_name
 image_size = resolution_options[args.resolution]
@@ -69,7 +70,7 @@ launch_files = []
 launches = []
 
 # Launch the cameras ------------------------------------------------------------------------------------------------
-print('\n\nLaunching cameras with ids: {}\n\n'.format(cameras_ids))
+print('\n\nLaunching cameras with ids: {}\n\n'.format(camera_names_and_ids))
 time.sleep(.5)
 for i, (camera_name, camera_id) in enumerate(camera_names_and_ids.items()):
     # Process arguments

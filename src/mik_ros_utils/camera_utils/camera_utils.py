@@ -1,4 +1,4 @@
-from mmint_camera_utils.tf_utils.tf_utils import get_all_frame_names
+from mik_ros_utils.ros_utils.tf_utils.tf_utils import get_all_frame_names
 
 
 def list_camera_tf_frames():
