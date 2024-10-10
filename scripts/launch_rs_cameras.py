@@ -38,6 +38,7 @@ resolution_options = {
 
 parser = argparse.ArgumentParser('Camera Launcher')
 parser.add_argument('--camera_config_package_name', type=str, default='mik_ros_utils', help=f'Name of the package to where to load the configuration for the cameras (cameras.yaml). Default: mik_ros_utils')
+parser.add_argument('--camera_config_file_name', type=str, default='cameras.yaml', help=f'Name of the file to load the cameras configuration. Default: cameras.yaml')
 parser.add_argument('--tags_config_package_name', type=str, default='apriltag_ros', help=f'Name of the package to where to load the configuration for the tags. Default: apriltag_ros')
 parser.add_argument('--resolution', type=str, default='640x480', choices=resolution_options.keys(), help=f'Resolution of the cameras. Options: {resolution_options.keys()}')
 parser.add_argument('--rate', type=int, default=15, help=f'Rate of the cameras. Default: 15')
@@ -51,13 +52,14 @@ rate = args.rate
 enable_pointcloud = args.enable_pointcloud
 align_depth = args.align_depth
 camera_config_package_name = args.camera_config_package_name
+camera_config_file_name = args.camera_config_file_name
 tags_config_package_name = args.tags_config_package_name
 image_size = resolution_options[args.resolution]
 img_width = image_size[0]
 img_height = image_size[1]
 
 
-camera_names_and_ids = load_camera_names_and_ids(camera_config_package_name) # dictionary of  {camera_name: camera_id}
+camera_names_and_ids = load_camera_names_and_ids(camera_config_package_name, file_name=camera_config_file_name) # dictionary of  {camera_name: camera_id}
 
 # Initialize the node
 rospy.init_node("launch_camera_node")

@@ -19,16 +19,16 @@ def load_tool_grasp_params():
     return bubble_reconstruction_configs
 
 
-def load_camera_config(package_name='mik_ros_utils'):
+def load_camera_config(package_name='mik_ros_utils', file_name='cameras.yaml'):
     package_path = find_package_path(package_name)
-    camera_configs_path = os.path.join(package_path, 'config', 'cameras.yaml')
+    camera_configs_path = os.path.join(package_path, 'config', file_name)
     camera_configs = _load_config_from_path(camera_configs_path)
     # camera_config is {'camera_name':'camera_id'} dictionary
     return camera_configs
 
 
-def load_camera_names_and_ids(package_name='mik_ros_utils'):
-    camera_configs = load_camera_config(package_name)
+def load_camera_names_and_ids(package_name='mik_ros_utils', file_name='cameras.yaml'):
+    camera_configs = load_camera_config(package_name, file_name=file_name)
     camera_names_and_ids = camera_configs
     return camera_names_and_ids
 
