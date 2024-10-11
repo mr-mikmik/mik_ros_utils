@@ -112,7 +112,7 @@ if not args.not_apriltags:
                        f'camera_name:=/{camera_name}',
                        f'camera_frame:=/{camera_name}_color_optical_frame',
                        'image_topic:=/color/image_raw',
-                       'node_namespace:=apriltag_ros_continuous_node_{}'.format(i+1),
+                       'node_namespace:=apriltag_ros_continuous_node_{}'.format(camera_id),
                        'publish_tf:=false', # Do not publish the tf for the tags to avoid multiple parent frames
                        'params_package_name:={}'.format(args.tags_config_package_name),
                        ]
