@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('--clean_buffer', type=bool, default=True, help='if false, we will not clean the buffer, and detected tags will be published until the process is closed. '
                                                                           'If they are detected again, they will still be updated')
 
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
     tag_ids = args.tag_ids
     _tag_ids_names = args.tag_ids_names
     if _tag_ids_names is None:
