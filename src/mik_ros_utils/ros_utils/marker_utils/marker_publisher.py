@@ -69,7 +69,6 @@ class MarkerPublisher(PublisherWrapper):
             marker.points = self.marker_points
         return marker
 
-
     @property
     def pose(self):
         return self.data
