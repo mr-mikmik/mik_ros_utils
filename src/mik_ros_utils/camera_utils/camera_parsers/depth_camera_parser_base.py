@@ -36,9 +36,10 @@ class DepthCameraParserBase(CameraParserBase):
         topics = super()._get_topics()
         added_topics = {
             'depth': self._get_depth_topic(),
-            'pointcloud': self._get_pc_topic(),
             'depth_info': self._get_depth_info_topic(),
         }
+        if self.record_pointcloud:
+            added_topics['pointcloud'] = self._get_pc_topic()
         topics.update(added_topics)
         return topics
 
