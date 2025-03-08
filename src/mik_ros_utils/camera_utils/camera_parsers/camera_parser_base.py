@@ -18,17 +18,18 @@ from mik_ros_utils import package_path
 
 class CameraParserBase(abc.ABC):
 
-    def __init__(self, camera_indx=None, scene_name='scene', save_path=None, camera_name=None, save_img_as_numpy=False, verbose=True, wrap_data=False, buffered=False, no_listeners=False, parent_frame='med_base'):
+    def __init__(self, camera_name=None, camera_indx=None, scene_name='scene', save_path=None, save_img_as_numpy=False, verbose=True, wrap_data=False, buffered=False, no_listeners=False, buffer_wait=True, parent_frame='med_base'):
         self.scene_name = scene_name
         self.verbose = verbose # TODO: Log into file or terminal
         self.wrap_data = wrap_data
         self.save_img_as_numpy = save_img_as_numpy
         self.buffered = buffered
+        self.buffer_wait = buffer_wait
         self.parent_frame = parent_frame
         self.no_listeners = no_listeners
+        self.camera_name = self._get_camera_name(camera_name)
         self.camera_indx = self._get_camera_indx(camera_indx)
         self.save_path = self._get_save_path(save_path)
-        self.camera_name = self._get_camera_name(camera_name)
         self.data_params = {'scene_name': self.scene_name, 'save_path': self.save_path, 'camera_name': self.camera_name}
         self.optical_frame = self._get_optical_frame_name()
         self.topics = self._get_topics()
@@ -45,14 +46,22 @@ class CameraParserBase(abc.ABC):
         self.tf_listener = self._get_tf_listener()
         rospy.sleep(.2)
 
+    @property
+    def wait_for_data(self):
+        return self.buffered
+
     def _get_listeners(self):
         if self.no_listeners:
             return None
         listeners = {
             topic: Listener(topic_name, self.msgs_types[topic], callback=self._create_topic_callback(topic),
-                            wait_for_data=self.buffered, queue_size=1)
+                            wait_for_data=self.wait_for_data, queue_size=1)
             for topic, topic_name in self.topics.items()}
         return listeners
+
+    def _get_camera_frame(self):
+        camera_frame = '{}_link'.format(self.camera_name)
+        return camera_frame
 
     def _get_tf_listener(self):
         tf_listener = tf2.TransformListener(buffer=self.tf_buffer, queue_size=1000, buff_size=500000)
@@ -61,6 +70,11 @@ class CameraParserBase(abc.ABC):
     def _get_from_buffer(self, topic_key):
         with self.locks[topic_key]:
             topic_data = self.buffers[topic_key]
+        if self.buffer_wait:
+            while topic_data is None:
+                rospy.sleep(.01)
+                with self.locks[topic_key]:
+                    topic_data = self.buffers[topic_key]
         return topic_data
 
     def _clean_buffer(self, topic_name=None):
@@ -109,7 +123,7 @@ class CameraParserBase(abc.ABC):
         Return a list of the camera's important frames
         :return:
         """
-        camera_frames = ['{}_link'.format(self.camera_name)] + list(self.optical_frame.values())
+        camera_frames = [self._get_camera_frame()] + list(self.optical_frame.values())
         camera_frames = list(np.unique(camera_frames))
         return camera_frames
 
