@@ -18,7 +18,7 @@ from mik_ros_utils import package_path
 
 class CameraParserBase(abc.ABC):
 
-    def __init__(self, camera_name=None, camera_indx=None, scene_name='scene', save_path=None, save_img_as_numpy=False, verbose=True, wrap_data=False, buffered=False, no_listeners=False, buffer_wait=True, parent_frame='med_base'):
+    def __init__(self, camera_name=None, camera_indx=None, scene_name='scene', save_path=None, save_img_as_numpy=False, verbose=True, wrap_data=False, buffered=False, no_listeners=False, buffer_wait=True, parent_frame=None):
         self.scene_name = scene_name
         self.verbose = verbose # TODO: Log into file or terminal
         self.wrap_data = wrap_data
@@ -191,6 +191,9 @@ class CameraParserBase(abc.ABC):
             self.scene_name = scene_name
 
     def _get_topic_data(self, topic_key):
+        if topic_key not in self.topics:
+            self.log_message('Error: topic_key "{}" not found in topics: {}'.format(topic_key, list(self.topics.keys())))
+            return None
         if self.buffered:
             # read from the buffer
             topic_data = self._get_from_buffer(topic_key)
@@ -277,7 +280,12 @@ class CameraParserBase(abc.ABC):
         if fc is None:
             fc = self.counter['tf']
         tf_frames = self.get_camera_frames()
-        tfs_df = get_tfs(tf_frames, self.parent_frame, verbose=self.verbose, buffer=self.tf_buffer)
+        if self.parent_frame is None:
+            parent_frame = self._get_camera_frame()
+            self.log_message('No parent frame provided, using the camera_frame: {}'.format(parent_frame))
+        else:
+            parent_fame = self.parent_frame
+        tfs_df = get_tfs(tf_frames, parent_frame, verbose=self.verbose, buffer=self.tf_buffer)
         record_tfs(tfs_df, self.save_path, f'{self.scene_name}/{self.camera_name}', fc, file_name='tfs')
         self.counter['tf'] += 1
 

@@ -44,12 +44,14 @@ parser.add_argument('--resolution', type=str, default='640x480', choices=resolut
 parser.add_argument('--rate', type=int, default=15, help=f'Rate of the cameras. Default: 15')
 parser.add_argument('--not_apriltags', action='store_true', help='Do not launch the apriltags detection')
 parser.add_argument('--enable_pointcloud', action='store_true', help='Enable the pointcloud publishing')
+parser.add_argument('--enable_infra', action='store_true', help='Enable the pointcloud publishing')
 parser.add_argument('--align_depth', action='store_true', help='Align the depth image with the color image. Default: False')
 args, _ = parser.parse_known_args()
 
 # Unpack the arguments
 rate = args.rate
 enable_pointcloud = args.enable_pointcloud
+enable_infra = args.enable_infra
 align_depth = args.align_depth
 camera_config_package_name = args.camera_config_package_name
 camera_config_file_name = args.camera_config_file_name
@@ -89,6 +91,10 @@ for i, (camera_name, camera_id) in enumerate(camera_names_and_ids.items()):
                   'color_height:={}'.format(img_height),
                   'infra_fps:={}'.format(rate),
                   'color_fps:={}'.format(rate),
+                  # 'enable_infra:=true', # Enable the infrared streams
+                  'enable_infra1:={}'.format(enable_infra), # Enable the infrared streams
+                  'enable_infra2:={}'.format(enable_infra), # Enable the infrared streams
+                  # 'infra_rgb:=true'
                   'align_depth:={}'.format(align_depth),
                   'filters:=disparity,temporal,spatial,decimation' # Consider removing some of the filters
                   ]
