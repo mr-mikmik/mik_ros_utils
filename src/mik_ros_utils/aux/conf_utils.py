@@ -3,8 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from mik_ros_utils import find_package_path
-from mik_ros_utils.aux.package_utils import package_path, package_name, config_path
+from mik_ros_utils.aux.package_utils import package_path, package_name, config_path, find_package_path
 
 camera_calibration_joint_sequence_conf_path = os.path.join(package_path, 'config', 'camera_calibration_joint_sequences')
 camera_saved_calibrations_path = os.path.join(package_path, 'config', 'camera_saved_calibrations')

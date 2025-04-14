@@ -4,7 +4,7 @@ import yaml
 import sys
 import os
 import pathlib
-from mik_ros_utils import package_path, find_package_path
+from .package_utils import package_path, find_package_path
 
 
 def load_robot_configurations():
