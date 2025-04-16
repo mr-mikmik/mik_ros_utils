@@ -5,7 +5,8 @@ from geometry_msgs.msg import WrenchStamped
 
 from mik_ros_utils.aux import package_path
 from mik_ros_utils.ros_utils import pack_message_as_dict, TF2Wrapper, Listener
-from mik_ros_utils.utils.recording_utils import record_wrenches, pack_msgs_to_df, WrenchSelfSavedWrapper
+from mik_ros_utils.utils.recording_utils.recording_utils import record_wrenches, pack_msgs_to_df
+from mik_ros_utils.utils.recording_utils.data_recording_wrappers import WrenchSelfSavedWrapper
 
 
 

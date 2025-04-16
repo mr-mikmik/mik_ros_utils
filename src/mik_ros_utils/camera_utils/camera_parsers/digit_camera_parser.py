@@ -1,4 +1,6 @@
 import os
+import rospy
+from std_srvs.srv import Empty, EmptyResponse, EmptyRequest
 from sensor_msgs.msg import Image, CompressedImage, CameraInfo
 
 from mik_ros_utils.camera_utils.camera_parsers.camera_parser_base import CameraParserBase
@@ -13,6 +15,9 @@ class DigitCameraParser(CameraParserBase):
     #     np_img = process_compressed_img_msg(img_msg)
     #     return np_img
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.reset_service_proxy = rospy.ServiceProxy(f'/digit_{self.camera_name}/reset', Empty)
 
     def _get_message_types(self):
         msgs_types = super()._get_message_types()
@@ -36,6 +41,17 @@ class DigitCameraParser(CameraParserBase):
 
     def _get_camera_name_base(self):
         return 'digit_'
+
+    def reset_digit(self):
+        """
+        Reset the digit camera by calling the reset service
+        """
+        rospy.loginfo(f'Resetting digit camera {self.camera_name}')
+        try:
+            self.reset_service_proxy(EmptyRequest())
+            rospy.loginfo(f'Digit camera {self.camera_name} reset successfully')
+        except rospy.ServiceException as e:
+            rospy.logerr(f'Failed to reset digit camera {self.camera_name}: {e}')
 
 
 
