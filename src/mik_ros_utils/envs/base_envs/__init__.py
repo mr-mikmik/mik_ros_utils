@@ -1,3 +1,4 @@
 from .ros_base_env import ROSBaseEnv
-from .multicamera_base_env import MultiCameraBaseEnv, RealSenseMultiCameraBaseEnv
+from .multicamera_base_env import MultiCameraBaseEnv
 from .ft_sensor_base_env import FTSensorBaseEnv
+from .rs_multicamera_base_env import RealSenseMultiCameraBaseEnv
