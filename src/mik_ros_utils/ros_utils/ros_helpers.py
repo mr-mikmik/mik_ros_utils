@@ -10,9 +10,9 @@ import rosgraph
 import rospy
 
 
-def safe_init_node(node_name: str):
+def safe_init_node(node_name: str, anonymous: bool = True):
     try:
-        rospy.init_node(node_name)
+        rospy.init_node(node_name, anonymous=anonymous)
     except (rospy.exceptions.ROSInitException, rospy.exceptions.ROSException):
         pass
 
