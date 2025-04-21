@@ -4,7 +4,7 @@ import time
 import argparse
 
 
-def launch_rs_cameras(camera_names_and_ids:dict, enable_pointcloud=False, enable_infra=False, align_depth=False, rate=15, img_width=640, img_height=480, not_apriltags=False):
+def launch_rs_cameras(camera_names_and_ids:dict, enable_pointcloud=False, enable_infra=False, align_depth=False, rate=15, img_width=640, img_height=480, not_apriltags=False, tags_config_package_name='apriltag_ros'):
     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
     uuids = []
     roslaunch.configure_logging(uuid)
@@ -58,7 +58,7 @@ def launch_rs_cameras(camera_names_and_ids:dict, enable_pointcloud=False, enable
                            'image_topic:=/color/image_raw',
                            'node_namespace:=apriltag_ros_continuous_node_{}'.format(camera_id),
                            'publish_tf:=false', # Do not publish the tf for the tags to avoid multiple parent frames
-                           'params_package_name:={}'.format(args.tags_config_package_name),
+                           'params_package_name:={}'.format(tags_config_package_name),
                            ]
             roslaunch_file_i = roslaunch.rlutil.resolve_launch_arguments(cli_args_i)[0]
             roslaunch_args_i = cli_args_i[2:]
