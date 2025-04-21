@@ -17,7 +17,7 @@ class DigitCameraParser(CameraParserBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.reset_service_proxy = rospy.ServiceProxy(f'/digit_{self.camera_name}/reset', Empty)
+        self.reset_service_proxy = rospy.ServiceProxy(f'/{self.camera_name}/reset', Empty)
 
     def _get_message_types(self):
         msgs_types = super()._get_message_types()
