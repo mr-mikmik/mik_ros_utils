@@ -13,7 +13,7 @@ class ROSBaseEnv(BaseEnv):
     Environment with:
      - Tf listener
     """
-    def __init__(self, save_path=None, scene_name='default_scene', ref_frame='med_base', wrap_data=False, verbose=False, buffered=False):
+    def __init__(self, save_path=None, scene_name='default_scene', ref_frame='world', wrap_data=False, verbose=False, buffered=False):
         self.save_path = self._get_save_path(save_path)
         self.ref_frame = ref_frame
         self.scene_name = scene_name
