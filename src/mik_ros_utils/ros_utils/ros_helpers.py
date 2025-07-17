@@ -11,6 +11,8 @@ import rospy
 
 
 def safe_init_node(node_name: str, anonymous: bool = True):
+    # make the node_name compliant with ros i.e. remove special characters (except underscores)
+    node_name = node_name.replace("-", "_").replace(" ", "_").replace(".", "_")
     try:
         rospy.init_node(node_name, anonymous=anonymous)
     except (rospy.exceptions.ROSInitException, rospy.exceptions.ROSException):
