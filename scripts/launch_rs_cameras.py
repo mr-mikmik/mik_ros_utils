@@ -68,7 +68,6 @@ camera_names_and_ids = load_camera_names_and_ids(camera_config_package_name, fil
 
 # Initialize the node
 rospy.init_node("launch_camera_node")
-
 launch_rs_cameras(camera_names_and_ids, enable_pointcloud=enable_pointcloud, enable_infra=enable_infra, align_depth=align_depth, rate=rate, 
                   img_width=img_width, img_height=img_height, not_apriltags=args.not_apriltags, tags_config_package_name=args.tags_config_package_name, 
                   settings_filename=args.settings_filename, tags_filename=args.tags_filename)
