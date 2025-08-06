@@ -47,6 +47,8 @@ parser.add_argument('--not_apriltags', action='store_true', help='Do not launch 
 parser.add_argument('--enable_pointcloud', action='store_true', help='Enable the pointcloud publishing')
 parser.add_argument('--enable_infra', action='store_true', help='Enable the pointcloud publishing')
 parser.add_argument('--align_depth', action='store_true', help='Align the depth image with the color image. Default: False')
+parser.add_argument('--settings_filename', type=str, default='settings.yaml', help='Name of the settings file to use for the cameras. Default: settings.yaml')
+parser.add_argument('--tags_filename', type=str, default='tags.yaml', help='Name of the tags file to use for the apriltags detection. Default: tags.yaml')
 args, _ = parser.parse_known_args()
 
 # Unpack the arguments
@@ -67,4 +69,6 @@ camera_names_and_ids = load_camera_names_and_ids(camera_config_package_name, fil
 # Initialize the node
 rospy.init_node("launch_camera_node")
 
-launch_rs_cameras(camera_names_and_ids, enable_pointcloud=enable_pointcloud, enable_infra=enable_infra, align_depth=align_depth, rate=rate, img_width=img_width, img_height=img_height, not_apriltags=args.not_apriltags, tags_config_package_name=args.tags_config_package_name)
+launch_rs_cameras(camera_names_and_ids, enable_pointcloud=enable_pointcloud, enable_infra=enable_infra, align_depth=align_depth, rate=rate, 
+                  img_width=img_width, img_height=img_height, not_apriltags=args.not_apriltags, tags_config_package_name=args.tags_config_package_name, 
+                  settings_filename=args.settings_filename, tags_filename=args.tags_filename)
