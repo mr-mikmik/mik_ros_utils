@@ -1,12 +1,11 @@
 import rospy
 import threading
-import abc
 import copy
 import tf2_ros as tf
 from geometry_msgs.msg import TransformStamped
 
 
-class TFBroadcaster(abc.ABC):
+class TFBroadcaster(object):
     def __init__(self, rate=5.0):
         self.tf_broadcaster = tf.TransformBroadcaster()
         self.rate = rospy.Rate(rate)
