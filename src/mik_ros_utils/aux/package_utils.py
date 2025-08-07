@@ -27,6 +27,15 @@ def get_mesh_path(mesh_name):
     return mesh_path
 
 
+def get_get_mesh_path_fn(package_name='mik_ros_utils'):
+    package_path = find_package_path(package_name)
+    meshes_path = os.path.join(package_path, 'meshes')
+    def get_mesh_path(mesh_name):
+        mesh_path = os.path.join(meshes_path, mesh_name)
+        return mesh_path
+    return get_mesh_path
+
+
 def get_xml_path(xml_name):
     xml_path = os.path.join(XML_PATH, xml_name)
     return xml_path

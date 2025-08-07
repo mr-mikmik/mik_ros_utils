@@ -3,7 +3,7 @@ import os
 
 from mik_ros_utils.ros_utils import MarkerPublisher
 from mik_ros_utils.aux.load_confs import get_load_object_params_fn, load_object_params, get_get_available_object_ids_fn, get_available_object_ids
-from mik_ros_utils.aux.package_utils import get_mesh_path
+from mik_ros_utils.aux.package_utils import get_get_mesh_path_fn
 
 
 class GeometryMarkerPublisher(MarkerPublisher):
@@ -12,7 +12,7 @@ class GeometryMarkerPublisher(MarkerPublisher):
         self.object_id = object_id
         self.package_name = package_name if package_name else 'mik_ros_utils'
         self.load_object_params_fn = load_object_params_fn if load_object_params_fn else get_load_object_params_fn(self.package_name, obj_params_file_name)
-        self.get_mesh_path_fn = get_mesh_path_fn if get_mesh_path_fn else get_get_available_object_ids_fn(self.package_name, obj_params_file_name)
+        self.get_mesh_path_fn = get_mesh_path_fn if get_mesh_path_fn else get_get_mesh_path_fn(self.package_name)
         self.object_params = self.load_object_params_fn()[object_id]
         super().__init__(*args, **kwargs)
         self._set_marker_type()
