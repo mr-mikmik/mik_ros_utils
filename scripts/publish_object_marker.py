@@ -26,15 +26,14 @@ and the marker is published while the object is visible in the camera's frame.
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('package_name', type=str, default='mik_ros_utils', help='name of the package to load object parameters from')
+    parser.add_argument('--obj_params_file_name', type=str, default='object_params.yaml', help='name of the object parameters file to load from the package')
     args, _ = parser.parse_known_args()
-    available_object_ids = get_get_available_object_ids_fn(args.package_name)
+    available_object_ids = get_get_available_object_ids_fn(args.package_name, args.obj_params_file_name)()
     parser.add_argument('--object_id', type=str, default=None, choices=available_object_ids,
                         help='object id to publish')
     parser.add_argument('--camera_id', type=str, default='camera_1', help='camera id to use')
     parser.add_argument('--marker_name', type=str, default='object_name', help='name of the marker to be published')
     parser.add_argument('--color', type=str, default='orange', choices=list(colors.keys()), help='color of the marker. Default: orange.')
-    parser.add_argument('--obj_params_file_name', type=str, default='object_params.yaml',
-                        help='name of the object parameters file to load from the package')
     args, _ = parser.parse_known_args()
 
     object_id = args.object_id
