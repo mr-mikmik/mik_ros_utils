@@ -25,7 +25,7 @@ and the marker is published while the object is visible in the camera's frame.
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('package_name', type=str, default='mik_ros_utils', help='name of the package to load object parameters from')
+    parser.add_argument('--package_name', type=str, default='mik_ros_utils', help='name of the package to load object parameters from')
     parser.add_argument('--obj_params_file_name', type=str, default='object_params.yaml', help='name of the object parameters file to load from the package')
     args, _ = parser.parse_known_args()
     available_object_ids = get_get_available_object_ids_fn(args.package_name, args.obj_params_file_name)()
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         mp_i.show = True
 
     # publish the object frame tf:
-    object_params = load_object_params()[object_id]
+    object_params = mp_i.object_params
     tag_id = object_params['tag_id']
     tag_pose_of = np.asarray(object_params['tag_pose_of'])
     frame_id = object_id
