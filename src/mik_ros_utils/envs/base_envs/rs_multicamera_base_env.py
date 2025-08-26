@@ -8,8 +8,9 @@ class RealSenseMultiCameraBaseEnv(MultiCameraBaseEnv):
         This environment handles an arbitrary number of cameras.
         """
 
-    def __init__(self, *args, rs_camera_names=(), record_scene_pcs=True, aligned_depth=False, infra=False, save_depth_as_numpy=True, save_color_as_numpy=False, **kwargs):
+    def __init__(self, *args, rs_camera_names=(), record_depth=True, record_scene_pcs=True, aligned_depth=False, infra=False, save_depth_as_numpy=True, save_color_as_numpy=False, **kwargs):
         self.rs_camera_names = rs_camera_names
+        self.record_depth = record_depth
         self.aligned_depth = aligned_depth
         self.infra = infra  # Enable infrared if needed
         self.record_scene_pcs = record_scene_pcs
@@ -59,7 +60,7 @@ class RealSenseMultiCameraBaseEnv(MultiCameraBaseEnv):
         if self.infra:
             obs['infra1'] = camera_parser.get_infra1()  # Get infrared image 1
             obs['infra2'] = camera_parser.get_infra2()
-        else:
+        elif self.record_depth:
             obs['depth_img'] = camera_parser.get_image_depth()
             obs['camera_info_depth'] = camera_parser.get_camera_info_depth()
         if self.record_scene_pcs:
